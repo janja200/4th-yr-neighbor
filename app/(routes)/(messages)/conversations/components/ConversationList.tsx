@@ -8,12 +8,12 @@ import { MdOutlineGroupAdd } from 'react-icons/md';
 import clsx from "clsx";
 import { find, uniq } from 'lodash';
 
-//import { pusherClient } from "@/app/libs/pusher";
 
 import ConversationBox from "./ConversationBox";
 import { FullConversationType } from "@/app/types";
 import useConversation from "@/hooks/messages/useConversation";
 import GroupChatModal from "@/components/messages/modals/GroupChatModal";
+import { pusherClient } from "@/lib/pusher";
 
 interface ConversationListProps {
   initialItems: FullConversationType[];
@@ -42,7 +42,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       return;
     }
 
-    //pusherClient.subscribe(pusherKey);
+    pusherClient.subscribe(pusherKey);
 
     const updateHandler = (conversation: FullConversationType) => {
       setItems((current) => current.map((currentConversation) => {
@@ -73,9 +73,9 @@ const ConversationList: React.FC<ConversationListProps> = ({
       });
     }
 
-   // pusherClient.bind('conversation:update', updateHandler)
-    //pusherClient.bind('conversation:new', newHandler)
-    //pusherClient.bind('conversation:remove', removeHandler)
+    pusherClient.bind('conversation:update', updateHandler)
+    pusherClient.bind('conversation:new', newHandler)
+    pusherClient.bind('conversation:remove', removeHandler)
   }, [pusherKey, router]);
 
   return (

@@ -3,12 +3,11 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 
-//import { pusherClient } from "@/app/libs/pusher";
-
 import MessageBox from "./MessageBox";
 import { FullMessageType } from "@/app/types";
 import { find } from "lodash";
 import useConversation from "@/hooks/messages/useConversation";
+import { pusherClient } from "@/lib/pusher";
 
 interface BodyProps {
   initialMessages: FullMessageType[];
@@ -25,7 +24,7 @@ const Body: React.FC<BodyProps> = ({ initialMessages = [] }) => {
   }, [conversationId]);
 
   useEffect(() => {
-   // pusherClient.subscribe(conversationId)
+    pusherClient.subscribe(conversationId)
     bottomRef?.current?.scrollIntoView();
 
     const messageHandler = (message: FullMessageType) => {
@@ -53,13 +52,13 @@ const Body: React.FC<BodyProps> = ({ initialMessages = [] }) => {
     };
   
 
-   // pusherClient.bind('messages:new', messageHandler)
-   // pusherClient.bind('message:update', updateMessageHandler);
+    pusherClient.bind('messages:new', messageHandler)
+    pusherClient.bind('message:update', updateMessageHandler);
 
     return () => {
-     // pusherClient.unsubscribe(conversationId)
-     // pusherClient.unbind('messages:new', messageHandler)
-      //pusherClient.unbind('message:update', updateMessageHandler)
+      pusherClient.unsubscribe(conversationId)
+      pusherClient.unbind('messages:new', messageHandler)
+      pusherClient.unbind('message:update', updateMessageHandler)
     }
   }, [conversationId]);
 
